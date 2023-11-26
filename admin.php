@@ -3,7 +3,6 @@ require_once "dbconnect.php";
 require_once "function.php";
 session_start();
 ob_start();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +10,7 @@ ob_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css\style.css">
-    <title>Index</title>
+    <title>Admin</title>
 </head>
 <body>
     <header>
@@ -26,9 +25,7 @@ ob_start();
     </nav>
     </header>
 
-    <?PHP 
-    
-    ?>
+ 
     <footer>
         & 0306221391 - PHẠM ANH TUẤN
     </footer>

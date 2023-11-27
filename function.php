@@ -54,13 +54,14 @@ function DangNhap($username, $password, &$errors) {
         $data = GetUserData($username);
         if (!empty($data)) {
             if (password_verify($password, $data[0]['password'])) {
+                
                 return $data[0]['admin'];
             } else {
-                $errors['noAcc'] = '<span id="error">Thông tin đăng nhập không chính xác! </span>';
+                $errors['login']= '<span id="error">Đăng nhập thất bại!</span>';
+
                 return -1;
             }
         } else {
-            $errors['noAcc'] = '<span id="error">Thông tin đăng nhập không chính xác! </span>';
             return -1;
         }
     } catch (Exception $ex) {

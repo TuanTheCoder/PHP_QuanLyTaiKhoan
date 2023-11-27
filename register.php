@@ -4,35 +4,42 @@ require_once "function.php";
 session_start();
 ob_start();
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $user_pw = trim($_POST['user_pw']);
     $user_re_pw = trim($_POST['user_re_pw']);
+    $errors = [];
+    $alerts = [];
     $valid = true;
-
-    if (empty($username)) {
-        echo '<p>Tên username không hợp lệ!</p>';
+    $usernamecheck= preg_match('@[^\w]@',$username);
+    if (empty($username) || strlen($username) > 32  || $usernamecheck) {
+        if ( KiemtraUsername($username) == false) {
+            $errors['usernamecheck'] ='<span id="error"> Tên tài khoản đã tồn tại! </span>';
+        }
+        $errors['usernamecheck']='<span id="error">Tên username không hợp lệ!</span>';
         $valid = false;
     }
 
-    $vietHoa = preg_match('@[A-Z]@', $password);
-    $vietThuong = preg_match('@[a-z]@', $password);
-    $so    = preg_match('@[0-9]@', $password);
-    $kyTu= preg_match('@[^\w]@', $password);
+    $vietHoa = preg_match('@[A-Z]@', $user_pw);
+    $vietThuong = preg_match('@[a-z]@', $user_pw);
+    $so = preg_match('@[0-9]@', $user_pw);
+    $kyTu = preg_match('@[^\w]@', $user_pw);
 
-    if (!$vietHoa || !$vietThuong || !$so || !$kyTu || strlen($password) < 8 || strlen($user_pw) > 32) {
-        echo 'Mật khẩu phải có ít nhất 8 ký tự và thỏa mãn độ phức tạp! \n';
+    if (!$vietHoa || !$vietThuong || !$so || !$kyTu || strlen($user_pw) < 6 || strlen($user_pw) > 60) {
+        $errors['password']= '<span id="error"> Mật khẩu phải có ít nhất 6 ký tự và thỏa mãn độ phức tạp! </span>';
         $valid = false;
-    } 
+    }
     if (empty($user_re_pw) ||  strcmp($user_pw, $user_re_pw)) {
-        echo '<p>Re-Password phải trùng khớp nhau!</p>';
+        $errors['repass']= '<span id="error">Re-Password phải trùng khớp nhau!</span>';
         $valid = false;
     }
     if ($valid == true) {
         $user_pw = password_hash($user_pw, PASSWORD_BCRYPT);
-        TaoTaiKhoan($username, $user_pw);
+        TaoTaiKhoan($username, $user_pw,$alerts, $errors);
     }
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -46,28 +53,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-<header>
-      <nav>
-        <h2>TRANG QUẢN LÝ TÀI KHOẢN</h2>
-        <ul>
-            <li><a href="index.php">Trang chủ</a></li>
-            <li><a href="#">Thông tin tài khoản</a></li>
-            <li><a href="register.php">Đăng ký</a></li>
-            <li><a href="login.php">Đăng nhập</a></li>
-        </ul>
-    </nav>
+    <header>
+        <nav>
+            <h2>TRANG QUẢN LÝ TÀI KHOẢN</h2>
+            <ul>
+                <li><a href="index.php">Trang chủ</a></li>
+                <li><a href="#">Thông tin tài khoản</a></li>
+                <li><a href="register.php">Đăng ký</a></li>
+                <li><a href="login.php">Đăng nhập</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <div class="main">
-         <h2>Register</h2>
+    <div class="form-input">
+       
         <form method="post">
+        <h2>Register</h2>
             <label for="username">Username:</label> <br>
-            <input type="text" name="username" id="username" maxlength="255" required> <br>
+            <input type="text" name="username" id="username" maxlength="32" required> <br>
+            <?PHP 
+            if (isset($errors['usernamecheck'])) {
+                echo $errors['usernamecheck'];
+            }
+            ?>
             <label for="user_pw">Password</label> <br>
-            <input type="password" name="user_pw" id="user_pw" maxlength="32" required> <br>
+            <input type="password" name="user_pw" id="user_pw" maxlength="60" required> <br>
+            <?PHP 
+            if (isset($errors['password'])) {
+                echo $errors['password'];
+            }
+            
+            ?>
             <label for="user_re_pw">Hãy nhập lại Password</label> <br>
-            <input type="password" name="user_re_pw" id="user_re_pw" maxlength="32" required><br>
-            <input type="submit" name="dangky" value="Đáng ký"><br>
+            <input type="password" name="user_re_pw" id="user_re_pw" maxlength="60" required><br>
+            <?PHP
+            if (isset($errors['repass'])) {
+                echo $errors['repass'];
+            }
+            ?>
+            <input type="submit" name="dangky" value="Đăng ký"><br>
+            <?PHP
+            if (isset($alerts['newUser'])) {
+                echo $alerts['newUser'];
+            }
+            else if (isset($errors['newUser'])) {
+                echo $errors['newUser'];
+            }
+            ?>
         </form>
     </div>
    

@@ -6,29 +6,37 @@ ob_start();
 if (isset($_POST['dangnhap']) && ($_POST['dangnhap']) ) {
     $user=trim($_POST['username']);
     $pass=trim($_POST['user_pw']);
+    $errors = [];
     $valid = true;
     if (empty($user)) {
-        echo '<p>Username không được bỏ trống!</p>';
+        $errors['$usernamecheck']='<span id="error">Username không được bỏ trống!</span>';
         $valid = false;
     }
     if (empty($pass)) {
-        echo '<p>Password không được bỏ trống!</p>';
+        $errors['password']='<span id="error">Password không được bỏ trống!</span>';
         $valid = false;
     }
     if ($valid) {
-        $VaiTro=DangNhap($user,$pass);
-        $_SESSION['admin']=$VaiTro;
-        if ($_SESSION['admin']==1) {
-            header('Location: admin.php');
+        if (KiemtraUsername($user)==false) {
+            $errors['login']= '<span id="error">Đăng nhập thất bại!</span>';
         }
         else {
-            header('Location: index.php');
+            $VaiTro=DangNhap($user,$pass,$errors);
+            if (!isset($errors['noAcc']))  {
+                $_SESSION['admin']=$VaiTro;
+                if ($_SESSION['admin']==1) 
+                    header('Location: admin.php');
+                else if ($_SESSION['admin']==0)
+                    header('Location: index.php');
+                else
+                    $errors['login']= '<span id="error">Đăng nhập thất bại!</span>';
+            }
+           
         }
+       
+            
     }
-    else{
-        echo '<p>Đăng nhập thất bại!</p>';
-        header('Location: login.php');
-    }
+    
 }
 ?>
 <!DOCTYPE html>
@@ -51,14 +59,36 @@ if (isset($_POST['dangnhap']) && ($_POST['dangnhap']) ) {
         </ul>
     </nav>
     </header>
-    <div class="main">
+    <div class="form-input">
+        <form  method="post">
         <h2>Login</h2>
-        <form action="<?PHP echo $_SERVER['PHP_SELF']  ?>" method="post">
+        <?PHP 
+          if (isset($errors['noAcc'])) {
+            echo $errors['noAcc'];
+        }
+    
+        ?>
         <label for="username">Username: </label> <br>
-        <input type="text" name="username" id="username" maxlength="255" required> <br>
+        <input type="text" name="username" id="username" maxlength="32" required> <br>
+        <?PHP
+        if (isset($errors['usernamecheck'])) {
+            echo $errors['usernamecheck'];
+        }
+        ?>
         <label for="user_pw">Password</label> <br>
-        <input type="password" name="user_pw" id="user_pw"  maxlength="32" required>     <br>    
-        <input type="submit" name="dangnhap" value="Đáng nhập"><br>
+        <input type="password" name="user_pw" id="user_pw"  maxlength="60" required>  <br>  
+        <?PHP
+        if (isset($errors['password'])) {
+            echo $errors['password'];
+        }
+        ?>
+        <input type="submit" name="dangnhap" value="Đăng nhập"><br>
+        <?PHP
+       if (isset($errors['login'])) {
+              echo $errors['login'];
+       }
+
+       ?>
         </form>
     </div>
 

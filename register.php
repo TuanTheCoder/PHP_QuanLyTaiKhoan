@@ -58,51 +58,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>TRANG QUẢN LÝ TÀI KHOẢN</h2>
             <ul>
                 <li><a href="index.php">Trang chủ</a></li>
-                <li><a href="#">Thông tin tài khoản</a></li>
-                <li><a href="register.php">Đăng ký</a></li>
-                <li><a href="login.php">Đăng nhập</a></li>
+                <?php 
+                if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
+                    echo '<li><a href="account.php">Thông tin tài khoản</a></li>
+                    <li><a href="logout.php">Đăng xuất</a></li>';
+                } else {
+                    echo '<li><a href="register.php">Đăng ký</a></li>
+                    <li><a href="login.php">Đăng nhập</a></li>';
+                }
+                ?>
             </ul>
         </nav>
     </header>
-
-    <div class="form-input">
+<?PHP
+if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
+    echo '<div class="form-input">
+    <h2>Bạn đã đăng nhập rồi!, trang sẽ chuyển sang trang chủ trong vòng 5 giây!</h2>
+    </div>';
+    header('Refresh: 5; URL=index.php');
+}
+else {
+    echo   '<div class="form-input">
        
         <form method="post">
         <h2>Register</h2>
             <label for="username">Username:</label> <br>
-            <input type="text" name="username" id="username" maxlength="32" required> <br>
-            <?PHP 
+            <input type="text" name="username" id="username" maxlength="32" required> <br>';
             if (isset($errors['usernamecheck'])) {
                 echo $errors['usernamecheck'];
             }
-            ?>
-            <label for="user_pw">Password</label> <br>
-            <input type="password" name="user_pw" id="user_pw" maxlength="60" required> <br>
-            <?PHP 
+            
+            echo '<label for="user_pw">Password</label> <br>
+            <input type="password" name="user_pw" id="user_pw" maxlength="60" required> <br>' ;
             if (isset($errors['password'])) {
                 echo $errors['password'];
             }
             
-            ?>
-            <label for="user_re_pw">Hãy nhập lại Password</label> <br>
-            <input type="password" name="user_re_pw" id="user_re_pw" maxlength="60" required><br>
-            <?PHP
+            
+            echo '<label for="user_re_pw">Hãy nhập lại Password</label> <br>
+            <input type="password" name="user_re_pw" id="user_re_pw" maxlength="60" required><br>';
             if (isset($errors['repass'])) {
                 echo $errors['repass'];
             }
-            ?>
-            <input type="submit" name="dangky" value="Đăng ký"><br>
-            <?PHP
+        
+            echo '<input type="submit" name="dangky" value="Đăng ký"><br>';
+            
             if (isset($alerts['newUser'])) {
                 echo $alerts['newUser'];
             }
             else if (isset($errors['newUser'])) {
                 echo $errors['newUser'];
             }
-            ?>
-        </form>
-    </div>
-   
+            
+      echo'  </form>
+    </div>';
+}
+ 
+   ?>
     <footer>
         & 0306221391 - PHẠM ANH TUẤN
     </footer>

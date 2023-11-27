@@ -1,7 +1,8 @@
 <?php
+session_start();
 require_once "dbconnect.php";
 require_once "function.php";
-session_start();
+
 ob_start();
 if (isset($_POST['dangnhap']) && ($_POST['dangnhap']) ) {
     $user=trim($_POST['username']);
@@ -24,6 +25,8 @@ if (isset($_POST['dangnhap']) && ($_POST['dangnhap']) ) {
             $VaiTro=DangNhap($user,$pass,$errors);
             if (!isset($errors['noAcc']))  {
                 $_SESSION['admin']=$VaiTro;
+                $_SESSION['username']=$user;
+                $_SESSION['password']=$pass;
                 if ($_SESSION['admin']==1) 
                     header('Location: admin.php');
                 else if ($_SESSION['admin']==0)
@@ -53,45 +56,60 @@ if (isset($_POST['dangnhap']) && ($_POST['dangnhap']) ) {
         <h2>TRANG QUẢN LÝ TÀI KHOẢN</h2>
         <ul>
             <li><a href="index.php">Trang chủ</a></li>
-            <li><a href="#">Thông tin tài khoản</a></li>
-            <li><a href="register.php">Đăng ký</a></li>
-            <li><a href="login.php">Đăng nhập</a></li>
+            <?php 
+                if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
+                    echo '<li><a href="account.php">Thông tin tài khoản</a></li>
+                    <li><a href="logout.php">Đăng xuất</a></li>';
+                } else {
+                    echo '<li><a href="register.php">Đăng ký</a></li>
+                    <li><a href="login.php">Đăng nhập</a></li>';
+                }
+                ?>
         </ul>
     </nav>
     </header>
-    <div class="form-input">
-        <form  method="post">
-        <h2>Login</h2>
-        <?PHP 
-          if (isset($errors['noAcc'])) {
-            echo $errors['noAcc'];
-        }
+    <?PHP 
+   if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
+    echo '<div class="form-input">
+    <h2>Bạn đã đăng nhập rồi!, trang sẽ chuyển sang trang chủ trong vòng 5 giây!</h2>
+    </div>';
+    header('Refresh: 5; URL=index.php');
+   }
+   else {
+    echo '<div class="form-input">
+    <form  method="post">
+    <h2>Login</h2>';
+  
+      if (isset($errors['noAcc'])) {
+        echo $errors['noAcc'];
     
-        ?>
-        <label for="username">Username: </label> <br>
-        <input type="text" name="username" id="username" maxlength="32" required> <br>
-        <?PHP
-        if (isset($errors['usernamecheck'])) {
-            echo $errors['usernamecheck'];
-        }
-        ?>
-        <label for="user_pw">Password</label> <br>
-        <input type="password" name="user_pw" id="user_pw"  maxlength="60" required>  <br>  
-        <?PHP
-        if (isset($errors['password'])) {
-            echo $errors['password'];
-        }
-        ?>
-        <input type="submit" name="dangnhap" value="Đăng nhập"><br>
-        <?PHP
-       if (isset($errors['login'])) {
-              echo $errors['login'];
-       }
+      }
+   
+    echo '<label for="username">Username: </label> <br>
+    <input type="text" name="username" id="username" maxlength="32" required> <br>';
+    
+    if (isset($errors['usernamecheck'])) {
+        echo $errors['usernamecheck'];
+    }
+    
+    echo '<label for="user_pw">Password</label> <br>
+    <input type="password" name="user_pw" id="user_pw"  maxlength="60" required>  <br>  ';
+    
+    if (isset($errors['password'])) {
+        echo $errors['password'];
+    }
+    
+    echo '<input type="submit" name="dangnhap" value="Đăng nhập"><br>';
+    
+   if (isset($errors['login'])) {
+          echo $errors['login'];
+   }
 
-       ?>
-        </form>
-    </div>
 
+echo'    </form>
+</div>';
+   }
+?>
 
     <footer>
         & 0306221391 - PHẠM ANH TUẤN

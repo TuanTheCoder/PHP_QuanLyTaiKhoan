@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ((isset($_SESSION['username']) && isset($_SESSION['password']))  || (isset($_COOKIE['username']) && isset($_COOKIE['password']))) {
         echo '<div class="form-input">
-    <h2>Bạn đã đăng nhập! Trang sẽ chuyển sang trang chủ trong vòng 5 giây!</h2>
+    <h2 id="alert">Bạn đã đăng nhập! Trang sẽ chuyển sang trang chủ trong vòng 5 giây!</h2>
     </div>';
         header('Refresh: 5; URL=index.php');
     } else {

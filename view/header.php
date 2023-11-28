@@ -1,3 +1,4 @@
+<!-- Header của các trang -->
 <header>
         <nav>
             <h2>TRANG QUẢN LÝ TÀI KHOẢN</h2>

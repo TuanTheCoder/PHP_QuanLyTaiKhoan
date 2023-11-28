@@ -1,8 +1,8 @@
 <?php
 require_once "dbconnect.php";
 require_once "function.php";
-session_start();
-ob_start();
+KiemTraDangNhap();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,23 +13,7 @@ ob_start();
     <title>Admin</title>
 </head>
 <body>
-    <header>
-      <nav>
-        <h2>TRANG QUẢN LÝ TÀI KHOẢN</h2>
-        <ul>
-            <li><a href="index.php">Trang chủ</a></li>
-            <?php 
-                if (isset($_SESSION['username']) && isset($_SESSION['password'])) {
-                    echo '<li><a href="account.php">Thông tin tài khoản</a></li>
-                    <li><a href="logout.php">Đăng xuất</a></li>';
-                } else {
-                    echo '<li><a href="register.php">Đăng ký</a></li>
-                    <li><a href="login.php">Đăng nhập</a></li>';
-                }
-                ?>
-        </ul>
-    </nav>
-    </header>
+<?php require_once'view\header.php';  ?>
 
  
     <footer>

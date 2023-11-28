@@ -71,6 +71,16 @@ input[type="submit"]:hover {
     background-color: #0056b3;
 }
 
+input[type="checkbox"] {
+    margin: 10px 0;
+    vertical-align: middle;
+}
+
+label[for="remember"] {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+}
 
 table {
     border-collapse: collapse;
@@ -164,6 +174,12 @@ p{
 
 #alert {
     color: orange;
+    font-weight: bold;
+    margin: 5px 0px 5px 0px;
+    
+}
+#success {
+    color: green;
     font-weight: bold;
     margin: 5px 0px 5px 0px;
     
